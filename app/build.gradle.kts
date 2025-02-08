@@ -32,6 +32,10 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.leanback:leanback:1.0.0")
+    implementation("androidx.tvprovider:tvprovider:1.1.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
 }
