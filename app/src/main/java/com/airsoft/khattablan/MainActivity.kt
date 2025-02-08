@@ -2,6 +2,15 @@
 package com.airsoft.khattablan
 
 import android.content.Intent
+import android.widget.Toast
+import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.FragmentActivity
+import androidx.leanback.app.BrowseSupportFragment
+import androidx.leanback.widget.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.ViewGroup
@@ -61,12 +70,17 @@ class MainFragment : BrowseSupportFragment() {
     
     private fun launchApp(packageName: String) {
         try {
-            val intent = requireActivity().packageManager.getLaunchIntentForPackage(packageName)
+            val packageManager = requireActivity().packageManager
+            val intent = packageManager.getLaunchIntentForPackage(packageName)
             if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
+            } else {
+                // App not installed
+                Toast.makeText(requireContext(), "App not installed", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            // Handle error
+            Toast.makeText(requireContext(), "Error launching app", Toast.LENGTH_SHORT).show()
         }
     }
 

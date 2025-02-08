@@ -1,4 +1,9 @@
+
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">KhattabLan TV</string>
-    <string name="copyright">© 2024 KhattabLan TV - By Khattab</string>
+    <string name="browse_title">KhattabLan TV</string>
+    <string name="apps_header">Apps</string>
+    <string name="media_header">Media</string>
+    <string name="settings_header">Settings</string>
 </resources>
