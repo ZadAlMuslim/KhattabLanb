@@ -1,10 +1,15 @@
 
 package com.airsoft.khattablan
 
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
+import com.bumptech.glide.Glide
 
 class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,19 +22,52 @@ class MainActivity : FragmentActivity() {
     }
 }
 
+data class App(
+    val name: String,
+    val packageName: String,
+    val iconResId: Int = 0
+)
+
 class MainFragment : BrowseSupportFragment() {
+    private val COPYRIGHT = "© 2024 KhattabLan TV - By Khattab"
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
         title = "KhattabLan TV"
+        brandColor = resources.getColor(android.R.color.holo_blue_dark)
+        searchAffordanceColor = resources.getColor(android.R.color.holo_orange_dark)
         
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         adapter = rowsAdapter
 
-        // Add app rows (categories)
         createAppsRow(rowsAdapter)
         createMediaRow(rowsAdapter)
         createSettingsRow(rowsAdapter)
+        
+        setOnSearchClickedListener {
+            // Handle search
+        }
+        
+        setOnItemViewClickedListener { _, item, _, _ ->
+            when (item) {
+                is App -> launchApp(item.packageName)
+            }
+        }
+        
+        // Show copyright in footer
+        setTitle(title.toString() + "\n" + COPYRIGHT)
+    }
+    
+    private fun launchApp(packageName: String) {
+        try {
+            val intent = requireActivity().packageManager.getLaunchIntentForPackage(packageName)
+            if (intent != null) {
+                startActivity(intent)
+            }
+        } catch (e: Exception) {
+            // Handle error
+        }
     }
 
     private fun createAppsRow(rowsAdapter: ArrayObjectAdapter) {
@@ -59,13 +97,26 @@ class MainFragment : BrowseSupportFragment() {
 
 class CardPresenter : Presenter() {
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = ImageCardView(parent.context)
-        return ViewHolder(view)
+        val cardView = ImageCardView(parent.context).apply {
+            isFocusable = true
+            isFocusableInTouchMode = true
+            setMainImageDimensions(176, 176)
+        }
+        return ViewHolder(cardView)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val cardView = viewHolder.view as ImageCardView
-        // Bind your data to the card here
+        when (item) {
+            is App -> {
+                cardView.titleText = item.name
+                if (item.iconResId != 0) {
+                    Glide.with(cardView.context)
+                        .load(item.iconResId)
+                        .into(cardView.mainImageView)
+                }
+            }
+        }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
